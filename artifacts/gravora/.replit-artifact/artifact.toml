@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Gravora"
+version = "1.0.0"
+id = "artifacts/gravora"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22691
+
+[services.development]
+run = "pnpm --filter @workspace/gravora run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/gravora", "run", "build" ]
+publicDir = "artifacts/gravora/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22691"
+BASE_PATH = "/"

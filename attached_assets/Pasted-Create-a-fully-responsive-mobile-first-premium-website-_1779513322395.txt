@@ -1,0 +1,216 @@
+Create a fully responsive mobile-first premium website for a custom engraving and artistic printing brand called “Gravora”.
+
+Brand tagline:
+“Crafted Into Forever.”
+
+Business overview:
+Gravora creates premium engraved and customized products on wood and stone materials. The business focuses on personalized gifts, artistic engraving, wall decor, custom carving, and aesthetic handcrafted products designed for couples, gift buyers, and cafes/restaurants.
+
+Primary products:
+
+* Custom wood engraving
+* Stone carving and printing
+* Personalized gifts
+* Wall decor
+* Keychains
+* Premium engraved gift items
+
+Main brand positioning:
+A modern Instagram-worthy premium customization brand focused on handcrafted artistic engraving and emotional gifting.
+
+Target audience:
+
+* Couples
+* Gift buyers
+* Cafe & restaurant owners
+* Social media aesthetic buyers
+
+Website goal:
+The primary goal is to drive custom orders through a mobile-first experience where users can upload their own design/photo and connect directly through WhatsApp.
+
+Visual design direction:
+
+* Modern Instagram-brand-like aesthetic
+* Premium but minimal
+* Dark mode interface
+* Elegant craftsmanship-focused visuals
+* Fast and lightweight performance
+* Optimized for all devices, especially lower-end Android phones
+
+Color palette:
+
+* Matte black background
+* Dark wood brown accents
+* Warm beige highlights
+* Soft metallic bronze/copper touches
+* High contrast typography
+
+Typography:
+
+* Modern premium sans-serif fonts
+* Clean bold headings
+* Minimal elegant body text
+* Strong visual hierarchy
+
+UI/UX requirements:
+
+* Mobile-first layout
+* Smooth but lightweight animations
+* Apple-level smoothness but optimized performance
+* Floating bottom navigation bar
+* Fast loading speed
+* Minimal clutter
+* Premium spacing and typography
+* Modern card-based sections
+* Rounded corners with subtle shadows
+* Responsive design for all screen sizes
+
+Navigation items:
+
+* Home
+* Gallery
+* Custom Order
+* Pricing
+* Contact
+
+Homepage structure:
+
+1. Hero Section
+
+* Full-screen premium hero
+* Close-up visuals of wood and stone engraving
+* Bold cinematic headline
+* Subtitle focused on personalized craftsmanship
+* CTA buttons:
+
+  * “Create Your Custom Design”
+  * “Upload Your Idea”
+* Smooth scroll indicator
+* Subtle animated transitions
+
+2. Signature Products Section
+   Show curated premium products:
+
+* Engraved wood art
+* Stone carving
+* Personalized gifts
+* Cafe branding items
+* Wall decor
+
+Each card should:
+
+* have hover/tap interactions
+* premium shadows
+* smooth transitions
+* modern minimal presentation
+
+3. How It Works Section
+   3-step process:
+4. Upload your design/photo
+5. Gravora crafts it
+6. Delivered locally
+
+Use modern illustrated cards or icons.
+
+4. Instagram-Style Gallery
+
+* Masonry or Pinterest-style premium gallery
+* Mobile optimized
+* Smooth scrolling
+* Tap-to-expand images
+* Showcase texture and craftsmanship
+
+5. Material Showcase
+   Dedicated section showing:
+
+* wood textures
+* stone surfaces
+* engraving close-ups
+* craftsmanship details
+
+Focus heavily on texture realism and premium visual presentation.
+
+6. Bulk Orders & Cafe Branding Section
+   Professional section for:
+
+* cafes
+* restaurants
+* branding projects
+* custom decor installations
+
+7. Pricing Section
+   Show starting prices only:
+
+* Wood engraving from ₹XXX
+* Stone carving from ₹XXX
+* Personalized gifts from ₹XXX
+
+Do not create full fixed pricing.
+
+8. Testimonials Section
+   Placeholder layout ready for future customer reviews.
+
+9. Contact & WhatsApp CTA
+   Strong CTA section:
+   “Crafted Into Forever.”
+   “Turn Your Ideas Into Timeless Art.”
+
+Include:
+
+* WhatsApp integration
+* Upload design button
+* Instagram button
+* Inquiry form
+
+10. Floating WhatsApp Button
+    Visible across all pages.
+
+Features required:
+
+* Upload image/design feature
+* WhatsApp integration
+* Inquiry form
+* Instagram integration
+* Mobile-first optimization
+* SEO-ready structure
+* Lightweight animations
+* Fast performance
+* Ecommerce-ready architecture for future expansion
+
+Performance requirements:
+
+* Must score high on mobile performance
+* Optimized images
+* Lazy loading
+* Minimal JavaScript bloat
+* Smooth on low-end devices
+
+Future scalability:
+The architecture should allow future addition of:
+
+* ecommerce store
+* payment gateway
+* customer login
+* order tracking
+* multilingual support
+
+Do NOT make the website feel like:
+
+* a local printing shop
+* a generic ecommerce template
+* a cluttered marketplace
+
+The website should emotionally communicate:
+
+* craftsmanship
+* artistic value
+* personalization
+* premium quality
+* emotional gifting
+* modern aesthetic culture
+
+The final experience should feel like a mix of:
+
+* a modern luxury Instagram brand
+* handcrafted artistic studio
+* premium mobile lifestyle brand

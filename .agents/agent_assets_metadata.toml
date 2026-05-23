@@ -1,0 +1,62 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "CUgkarkL42Po-OesmNpVx"
+uri = "file://artifacts/gravora/public/hero-bg.png"
+type = "image"
+title = "Wood engraving close-up"
+
+[[generated]]
+id = "GIWM8_6L-qW0MtTUaX2Ks"
+uri = "file://artifacts/gravora/public/product-wood.png"
+type = "image"
+title = "Engraved wood coaster"
+
+[[generated]]
+id = "VkARcdjwj00TjfgBsWq6X"
+uri = "file://artifacts/gravora/public/product-stone.png"
+type = "image"
+title = "Carved slate stone"
+
+[[generated]]
+id = "QURq_RIhTx6ZZbFEt0vrN"
+uri = "file://artifacts/gravora/public/product-gift.png"
+type = "image"
+title = "Personalized gift box"
+
+[[generated]]
+id = "do1YEEr36BNFxrNLGOjaj"
+uri = "file://artifacts/gravora/public/product-cafe.png"
+type = "image"
+title = "Cafe branding sign"
+
+[[generated]]
+id = "CH2239EJBtmauWOFi6UeG"
+uri = "file://artifacts/gravora/public/product-decor.png"
+type = "image"
+title = "Wood wall decor"
+
+[[generated]]
+id = "mnw9ThQ83wx5JegGUwV0-"
+uri = "file://artifacts/gravora/public/product-keychain.png"
+type = "image"
+title = "Leather and wood keychain"
+
+[[generated]]
+id = "_hVBwsGt8_a1g5P8dV6qL"
+uri = "file://artifacts/gravora/public/gallery-1.png"
+type = "image"
+title = "Gallery wood piece 1"
+
+[[generated]]
+id = "FjDBgznK8jqiYEH_rhr3T"
+uri = "file://artifacts/gravora/public/gallery-2.png"
+type = "image"
+title = "Gallery stone piece 1"
+
+[[generated]]
+id = "oudwa1AKDKHX0st1HS1vW"
+uri = "file://artifacts/gravora/public/material-wood.png"
+type = "image"
+title = "Materials wood texture"
