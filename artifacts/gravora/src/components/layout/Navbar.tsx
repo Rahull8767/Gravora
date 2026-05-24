@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { SiInstagram, SiWhatsapp } from "react-icons/si";
 
 export function Navbar() {
@@ -16,9 +16,10 @@ export function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "#home" },
-    { name: "Gallery", href: "#gallery" },
-    { name: "Custom Order", href: "#custom-order" },
+    { name: "Shop", href: "#products" },
+    { name: "Materials", href: "#materials" },
     { name: "Pricing", href: "#pricing" },
+    { name: "Gallery", href: "#gallery" },
     { name: "Contact", href: "#contact" },
   ];
 
@@ -50,21 +51,40 @@ export function Navbar() {
           </ul>
         </nav>
 
-        {/* Desktop Socials */}
-        <div className="hidden md:flex items-center gap-4">
+        {/* Desktop Socials & Cart */}
+        <div className="hidden md:flex items-center gap-6">
           <a href="https://instagram.com/gravora" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-instagram">
             <SiInstagram className="w-5 h-5" />
           </a>
+          
+          {/* Cart Icon */}
+          <div className="relative cursor-pointer text-muted-foreground hover:text-primary transition-colors flex items-center" data-testid="nav-cart">
+            <ShoppingCart className="w-5 h-5" />
+            <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              0
+            </span>
+          </div>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button 
-          className="md:hidden text-foreground p-2"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          data-testid="button-mobile-menu"
-        >
-          {mobileMenuOpen ? <X /> : <Menu />}
-        </button>
+        {/* Mobile Group */}
+        <div className="flex md:hidden items-center gap-4">
+          {/* Cart Icon Mobile */}
+          <div className="relative cursor-pointer text-muted-foreground hover:text-primary transition-colors flex items-center mr-2" data-testid="nav-cart-mobile">
+            <ShoppingCart className="w-5 h-5" />
+            <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              0
+            </span>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="text-foreground p-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            data-testid="button-mobile-menu"
+          >
+            {mobileMenuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Nav Overlay */}
@@ -106,11 +126,14 @@ export function MobileBottomNav() {
         <a href="#home" className="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2" data-testid="link-bottom-home">
           Home
         </a>
-        <a href="#gallery" className="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2" data-testid="link-bottom-gallery">
-          Gallery
+        <a href="#products" className="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2" data-testid="link-bottom-shop">
+          Shop
         </a>
-        <a href="#custom-order" className="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2" data-testid="link-bottom-order">
-          Order
+        <a href="#materials" className="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2" data-testid="link-bottom-materials">
+          Materials
+        </a>
+        <a href="#pricing" className="flex flex-col items-center gap-1 hover:text-primary transition-colors p-2" data-testid="link-bottom-pricing">
+          Pricing
         </a>
       </div>
     </div>

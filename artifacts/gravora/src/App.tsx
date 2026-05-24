@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navbar, MobileBottomNav } from "@/components/layout/Navbar";
@@ -14,6 +15,9 @@ import { Contact } from "@/components/sections/Contact";
 import { WhatsAppButton } from "@/components/shared/WhatsAppButton";
 
 function App() {
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [customizingProductId, setCustomizingProductId] = useState<string | null>(null);
+
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 font-sans">
@@ -21,10 +25,15 @@ function App() {
         
         <main>
           <Hero />
-          <Products />
+          <Products 
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+            customizingProductId={customizingProductId}
+            setCustomizingProductId={setCustomizingProductId}
+          />
           <HowItWorks />
-          <Gallery />
-          <Materials />
+          <Gallery setCustomizingProductId={setCustomizingProductId} />
+          <Materials setActiveCategory={setActiveCategory} />
           <BulkOrders />
           <Pricing />
           <Testimonials />
