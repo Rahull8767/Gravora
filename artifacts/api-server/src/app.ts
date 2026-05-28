@@ -41,7 +41,7 @@ const publicPath = path.resolve(__dirname, "../../gravora/dist/public");
 app.use(express.static(publicPath));
 
 // Fallback to index.html for Single Page Application (SPA) routing
-app.get("*", (req, res, next) => {
+app.get(/.*/, (req, res, next) => {
   if (req.path.startsWith("/api")) {
     return next();
   }
