@@ -1,212 +1,204 @@
 import { useState } from "react";
+import { Check } from "lucide-react";
+import { SiWhatsapp } from "react-icons/si";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, MessageCircle } from "lucide-react";
+import { buildBulkInquiry } from "@/lib/whatsapp";
 
 export function BulkOrders() {
   const { toast } = useToast();
-  const [companyName, setCompanyName] = useState("");
-  const [productType, setProductType] = useState("Wooden Menus");
-  const [quantity, setQuantity] = useState(50);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [businessName, setBusinessName] = useState("");
+  const [contactPerson, setContactPerson] = useState("");
+  const [productType, setProductType] = useState("Custom Wooden Coasters / Menus");
+  const [estimatedQuantity, setEstimatedQuantity] = useState("25");
+  const [deadline, setDeadline] = useState("");
+  const [brandingNotes, setBrandingNotes] = useState("");
 
-  const productTypes = [
-    "Wooden Menus",
-    "Branded Coasters",
-    "Reserved Signage",
-    "Wall Art Decor",
-    "Custom Keychains",
-    "Corporate Awards"
+  const b2bProductTypes = [
+    "Custom Wooden Coasters / Menus",
+    "Branded Natural Stone Keepsakes",
+    "Corporate Gifting & Hampers",
+    "Table & Desk Signage",
+    "Custom Hardwood Keychains",
+    "Architectural Plaques / Awards",
+    "Other Bespoke Business Need",
   ];
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setLogoFile(e.target.files[0]);
-    }
-  };
-
-  const handleGetQuote = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!companyName.trim()) {
+    if (!businessName.trim()) {
       toast({
-        title: "Company Name Required",
-        description: "Please enter your company or brand name.",
-        variant: "destructive"
+        title: "Business Name Required",
+        description: "Please enter your organization or brand name.",
+        variant: "destructive",
       });
       return;
     }
 
-    if (quantity < 10) {
+    if (!contactPerson.trim()) {
       toast({
-        title: "Invalid Quantity",
-        description: "Minimum order quantity for B2B bulk orders is 10 units.",
-        variant: "destructive"
+        title: "Contact Person Required",
+        description: "Please enter your name.",
+        variant: "destructive",
       });
       return;
     }
 
-    // Construct WhatsApp message
-    const message = `Hi Gravora! I'd like to request a bulk B2B quote for my brand:\n- Company: ${companyName}\n- Product Type: ${productType}\n- Quantity: ${quantity}\n${logoFile ? `- Branding Logo: ${logoFile.name}\n` : ""}Please share details and catalog.`;
-
-    const whatsappUrl = `https://wa.me/919999999999?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
-
-    toast({
-      title: "Inquiry Sent to WhatsApp",
-      description: "Check your WhatsApp tab to finalize the details.",
+    const { url } = buildBulkInquiry({
+      businessName,
+      contactPerson,
+      productType,
+      estimatedQuantity,
+      deadline,
+      brandingRequirements: brandingNotes,
     });
 
-    // Reset Form
-    setCompanyName("");
-    setQuantity(50);
-    setLogoFile(null);
+    window.open(url, "_blank");
+
+    toast({
+      title: "Opening WhatsApp Chat",
+      description: "Please tap Send in WhatsApp to deliver your corporate inquiry.",
+    });
   };
 
   return (
-    <section id="custom-order" className="py-32 bg-background relative border-b border-white/5">
-      <div className="container mx-auto px-6">
-        <div className="bg-card border border-white/5 p-8 md:p-16 relative overflow-hidden flex flex-col lg:flex-row items-stretch justify-between gap-12 group">
-          {/* Subtle background element */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 group-hover:bg-primary/10 transition-colors duration-700 pointer-events-none"></div>
-
+    <section id="b2b" className="py-12 sm:py-16 md:py-20 bg-background border-t border-border/50 relative">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
           {/* Left Column: Context */}
-          <div className="w-full lg:w-1/2 flex flex-col justify-between relative z-10">
+          <div className="md:col-span-5 space-y-4">
             <div>
-              <span className="text-[10px] font-mono text-primary uppercase tracking-widest block mb-4">
-                B2B & Hospitality
-              </span>
-              <h3 className="text-3xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-                Elevate Your <br/>Brand Aesthetic
-              </h3>
-              <p className="text-muted-foreground font-light leading-relaxed text-base mb-8 max-w-lg">
-                We partner with independent cafes, boutique hotels, and premium brands to create custom tactile experiences. From engraved wooden menu boards and coaster suites to custom metal/wood reserve signs and indoor branding pieces.
+              <p className="text-[11px] font-mono text-primary uppercase tracking-[0.2em] mb-1.5 font-medium">
+                B2B & Bulk
               </p>
-              <ul className="space-y-3 mb-10 text-sm text-foreground font-light">
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary"></span> 
-                  Consistent brand execution on high-density wood & stone
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary"></span> 
-                  Tiered volume discounts (starting at 10+ units)
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary"></span> 
-                  Custom architectural sourcing and sample proofing
-                </li>
-              </ul>
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
+                Corporate Gifting & Brand Engraving
+              </h2>
             </div>
 
-            {/* Display Cafe product thumbnail */}
-            <div className="hidden sm:block max-w-sm border border-white/10 p-2 bg-background/50">
-              <img 
-                src="/product-cafe.png" 
-                alt="Cafe branding example" 
-                className="w-full h-auto object-cover opacity-80" 
-              />
-              <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider block mt-2 text-center">
-                Hospitality Wood Coasters & Slate Reserved Plaque
-              </span>
-            </div>
+            <p className="text-muted-foreground font-light text-xs sm:text-sm leading-relaxed">
+              We partner with studios, cafes, hospitality brands, and corporate teams to produce branded merchandise on natural hardwoods and quarried stones.
+            </p>
+
+            <ul className="pt-2 space-y-2 text-xs text-muted-foreground font-light">
+              <li className="flex items-center gap-2">
+                <Check className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span>Vector logo engraving from AI, SVG, or high-res files</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span>Volume tiered pricing & sample proofs</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span>Custom packaging & pan-India dispatch</span>
+              </li>
+            </ul>
           </div>
 
-          {/* Right Column: Form */}
-          <div className="w-full lg:w-1/2 bg-background border border-white/5 p-8 md:p-10 relative z-10 flex flex-col justify-center">
-            <h4 className="text-lg font-serif font-bold text-foreground mb-6">Bulk Quote Request</h4>
-            
-            <form onSubmit={handleGetQuote} className="space-y-6">
-              {/* Company Name */}
-              <div className="space-y-2">
-                <Label htmlFor="company-name" className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
-                  Company / Brand Name
-                </Label>
-                <Input
-                  id="company-name"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="e.g. Hearth & Co. Cafe"
-                  required
-                  className="bg-transparent border-white/10 rounded-none h-12 focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary"
-                  data-testid="input-b2b-company"
-                />
-              </div>
+          {/* Right Column: B2B Form */}
+          <div className="md:col-span-7">
+            <div className="bg-card/50 border border-border/60 rounded-lg p-5 sm:p-7">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="space-y-1">
+                    <Label htmlFor="b2b-business" className="text-[11px] font-mono uppercase text-muted-foreground">
+                      Business / Brand Name *
+                    </Label>
+                    <Input
+                      id="b2b-business"
+                      type="text"
+                      required
+                      placeholder="e.g. Copper Leaf Cafe"
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      className="bg-background border-border h-10 text-xs sm:text-sm rounded"
+                    />
+                  </div>
 
-              {/* Product Type & Qty Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Product Type Select */}
-                <div className="space-y-2">
-                  <Label htmlFor="product-type" className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
-                    Product Type
-                  </Label>
-                  <select
-                    id="product-type"
-                    value={productType}
-                    onChange={(e) => setProductType(e.target.value)}
-                    className="w-full h-12 bg-zinc-950 border border-white/10 rounded-none text-xs font-mono text-foreground px-4 focus-visible:outline-none focus:border-primary transition-all duration-200"
-                    data-testid="select-b2b-product"
-                  >
-                    {productTypes.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="space-y-1">
+                    <Label htmlFor="b2b-contact" className="text-[11px] font-mono uppercase text-muted-foreground">
+                      Contact Person *
+                    </Label>
+                    <Input
+                      id="b2b-contact"
+                      type="text"
+                      required
+                      placeholder="e.g. Rahul"
+                      value={contactPerson}
+                      onChange={(e) => setContactPerson(e.target.value)}
+                      className="bg-background border-border h-10 text-xs sm:text-sm rounded"
+                    />
+                  </div>
                 </div>
 
-                {/* Min Order Qty */}
-                <div className="space-y-2">
-                  <Label htmlFor="b2b-quantity" className="text-xs uppercase tracking-widest text-muted-foreground font-mono">
-                    Quantity (Min. 10)
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="space-y-1">
+                    <Label htmlFor="b2b-product" className="text-[11px] font-mono uppercase text-muted-foreground">
+                      Product Requirement
+                    </Label>
+                    <select
+                      id="b2b-product"
+                      value={productType}
+                      onChange={(e) => setProductType(e.target.value)}
+                      className="w-full bg-background border border-border h-10 px-3 text-xs sm:text-sm text-foreground rounded focus:outline-none focus:border-primary"
+                    >
+                      {b2bProductTypes.map((type) => (
+                        <option key={type} value={type} className="bg-background text-foreground">
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label htmlFor="b2b-qty" className="text-[11px] font-mono uppercase text-muted-foreground">
+                      Estimated Quantity
+                    </Label>
+                    <Input
+                      id="b2b-qty"
+                      type="text"
+                      placeholder="e.g. 50 units"
+                      value={estimatedQuantity}
+                      onChange={(e) => setEstimatedQuantity(e.target.value)}
+                      className="bg-background border-border h-10 text-xs sm:text-sm rounded"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="b2b-notes" className="text-[11px] font-mono uppercase text-muted-foreground">
+                    Custom Branding Details / Target Date
                   </Label>
-                  <Input
-                    id="b2b-quantity"
-                    type="number"
-                    min={10}
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    required
-                    className="bg-transparent border-white/10 rounded-none h-12 focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary font-mono"
-                    data-testid="input-b2b-qty"
+                  <textarea
+                    id="b2b-notes"
+                    rows={2}
+                    placeholder="Describe material preference, logo placement, or deadline..."
+                    value={brandingNotes}
+                    onChange={(e) => setBrandingNotes(e.target.value)}
+                    className="w-full bg-background border border-border p-3 text-xs sm:text-sm text-foreground rounded focus:outline-none focus:border-primary resize-y"
                   />
                 </div>
-              </div>
 
-              {/* Branding / Logo Upload */}
-              <div className="space-y-2">
-                <Label className="text-xs uppercase tracking-widest text-muted-foreground font-mono block">
-                  Upload Branding / Logo File
-                </Label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    id="b2b-logo-upload"
-                    className="hidden"
-                    onChange={handleLogoChange}
-                    accept="image/*,.pdf,.svg,.ai"
-                  />
-                  <label
-                    htmlFor="b2b-logo-upload"
-                    className="flex items-center gap-3 px-4 h-12 border border-white/10 bg-zinc-950 hover:bg-zinc-900 cursor-pointer text-xs font-mono text-muted-foreground hover:text-foreground transition-all duration-200 justify-center w-full"
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full h-11 rounded bg-[#25D366] hover:bg-[#1ebe5d] text-white font-mono text-xs uppercase tracking-wider gap-2 shadow-sm"
+                    data-testid="btn-submit-b2b"
                   >
-                    <Upload className="w-4 h-4 text-primary" />
-                    <span>{logoFile ? logoFile.name : "Select Vector / Logo Asset"}</span>
-                  </label>
+                    <SiWhatsapp className="w-4 h-4" />
+                    <span>Request Quotation on WhatsApp</span>
+                  </Button>
+                  <p className="text-[11px] text-muted-foreground text-center mt-2 font-light">
+                    Opens WhatsApp with your business requirements formatted for our artisan team.
+                  </p>
                 </div>
-              </div>
-
-              {/* Submit CTA */}
-              <Button
-                type="submit"
-                className="w-full rounded-none h-12 font-sans tracking-widest uppercase gap-2 mt-2"
-                data-testid="btn-b2b-submit"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Get Bulk Quote
-              </Button>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>

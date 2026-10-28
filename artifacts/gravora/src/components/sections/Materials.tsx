@@ -1,81 +1,14 @@
-import { ImagePlaceholder } from "../shared/ImagePlaceholder";
+import { ArrowRight } from "lucide-react";
+import { MATERIALS_DATA, type MaterialInfo } from "@/data/products";
 import { Button } from "@/components/ui/button";
-
-interface MaterialItem {
-  name: string;
-  category: "wood" | "stone";
-  durability: string;
-  finish: string;
-  bestFor: string;
-  price: string;
-  img: string;
-}
-
-const materialsData: MaterialItem[] = [
-  {
-    name: "Mango Wood",
-    category: "wood",
-    durability: "High (Dense hardwood, beautiful swirling grain patterns)",
-    finish: "Warm golden brown with fine natural luster",
-    bestFor: "Luxury keepsake boxes, coaster sets, and tableware",
-    price: "₹___",
-    img: ""
-  },
-  {
-    name: "Teak Wood",
-    category: "wood",
-    durability: "Exceptional (Highly resistant to decay, moisture, and aging)",
-    finish: "Rich dark honey with distinct, straight grain structures",
-    bestFor: "Legacy photo portraits, heavy signage, and keychains",
-    price: "₹___",
-    img: ""
-  },
-  {
-    name: "Pine Wood",
-    category: "wood",
-    durability: "Medium (Lightweight soft wood, easy to cut with high precision)",
-    finish: "Pale yellow-gold with a clean, rustic, minimalist look",
-    bestFor: "Multi-layered sacred geometry mandalas and light art panels",
-    price: "₹___",
-    img: ""
-  },
-  {
-    name: "Black Granite",
-    category: "stone",
-    durability: "Extremely High (Indestructible, weatherproof, scratch-resistant)",
-    finish: "Deep mirror-polished black with gold/white high-contrast engraving",
-    bestFor: "Premium desk plaques, trophies, and permanent memorial stones",
-    price: "₹___",
-    img: ""
-  },
-  {
-    name: "Kota Stone",
-    category: "stone",
-    durability: "High (Fine-grained natural limestone, highly durable and tactile)",
-    finish: "Matte earthy olive-grey, raw organic surface texture",
-    bestFor: "Coaster sets, paperweights, and architectural decor plaques",
-    price: "₹___",
-    img: ""
-  },
-  {
-    name: "White Marble",
-    category: "stone",
-    durability: "High (Luxurious crystalline stone, smooth surface)",
-    finish: "Cool white with delicate, unpredictable grey veining patterns",
-    bestFor: "Luxury desktop mementos and high-end branded awards",
-    price: "₹___",
-    img: ""
-  }
-];
 
 interface MaterialsProps {
   setActiveCategory: (cat: string) => void;
 }
 
 export function Materials({ setActiveCategory }: MaterialsProps) {
-  const handleShopRedirect = (category: "wood" | "stone") => {
-    setActiveCategory(category);
-    // Smooth scroll to products
+  const handleFilterByCategory = (type: "wood" | "stone") => {
+    setActiveCategory(type);
     const element = document.getElementById("products");
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -83,72 +16,102 @@ export function Materials({ setActiveCategory }: MaterialsProps) {
   };
 
   return (
-    <section id="materials" className="py-24 bg-card border-y border-white/5 relative overflow-hidden">
-      <div className="container mx-auto px-6">
-        <div className="mb-16 max-w-2xl">
-          <h2 className="text-sm font-medium tracking-[0.2em] text-primary uppercase mb-4">The Canvas</h2>
-          <h3 className="text-4xl md:text-5xl font-serif font-bold text-foreground">Uncompromising Materials</h3>
-          <p className="text-muted-foreground font-light mt-4 leading-relaxed">
-            We curate the finest wood and stone canvases. The structural integrity and grain of each piece is carefully selected to respond perfectly to our engraving processes.
-          </p>
+    <section id="materials" className="py-20 md:py-28 bg-card/40 border-t border-white/10 relative">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-6xl">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div className="max-w-2xl">
+            <span className="text-[11px] font-mono text-primary uppercase tracking-[0.2em] block mb-3">
+              Organic Canvases
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground">
+              Hardwoods & Natural Stone
+            </h2>
+            <p className="text-muted-foreground font-light mt-3 leading-relaxed text-sm sm:text-base">
+              The longevity and contrast of custom laser engraving depend entirely on the material density.
+              We source raw, seasoned Indian hardwoods and quarried stones suited for razor-sharp micro-burns.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded text-xs font-mono uppercase tracking-wider border-white/15"
+              onClick={() => handleFilterByCategory("wood")}
+            >
+              Browse Wood Art
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded text-xs font-mono uppercase tracking-wider border-white/15"
+              onClick={() => handleFilterByCategory("stone")}
+            >
+              Browse Stone Art
+            </Button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {materialsData.map((material, idx) => (
-            <div 
-              key={idx}
-              className="bg-background border border-white/5 flex flex-col group hover:border-primary/20 transition-all duration-300"
-              data-testid={`card-material-${idx}`}
+        {/* Materials Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {MATERIALS_DATA.map((material: MaterialInfo) => (
+            <div
+              key={material.name}
+              className="bg-background/90 border border-white/10 rounded-lg overflow-hidden flex flex-col justify-between group hover:border-primary/40 transition-all duration-300 shadow-sm"
             >
-              {/* Image Placeholder */}
-              <div className="aspect-[3/2] overflow-hidden bg-muted relative">
-                <ImagePlaceholder 
-                  src={material.img} 
-                  alt={material.name} 
-                  recommendedSize="600x400px" 
-                  label={`ADD ${material.name.toUpperCase()} PHOTO HERE`}
-                  className="transition-transform duration-700 group-hover:scale-105"
+              {/* Material Texture Thumbnail */}
+              <div className="relative aspect-[16/10] overflow-hidden bg-zinc-950">
+                <img
+                  src={material.img}
+                  alt={`${material.name} Texture`}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
                 />
+                <div className="absolute top-3 left-3 bg-zinc-950/85 backdrop-blur-md px-2.5 py-1 rounded text-[10px] font-mono uppercase tracking-widest text-primary border border-white/10">
+                  {material.type === "wood" ? "Hardwood" : "Natural Stone"}
+                </div>
               </div>
 
-              {/* Material Info */}
-              <div className="p-6 flex flex-col flex-grow space-y-4">
-                <div className="flex justify-between items-start">
-                  <h4 className="text-xl font-serif font-bold text-foreground">{material.name}</h4>
-                  <span className="text-[10px] font-mono text-primary bg-primary/5 border border-primary/20 px-2 py-0.5 uppercase tracking-widest">
-                    {material.category}
-                  </span>
-                </div>
+              {/* Material Details */}
+              <div className="p-6 flex flex-col flex-grow justify-between space-y-4">
+                <div>
+                  <h3 className="text-xl font-serif font-bold text-foreground group-hover:text-primary transition-colors">
+                    {material.name}
+                  </h3>
+                  <p className="text-xs font-mono text-primary/80 mt-1 mb-3">
+                    {material.headline}
+                  </p>
 
-                <div className="space-y-2 text-xs font-light text-muted-foreground flex-grow">
-                  <p>
-                    <strong className="text-foreground font-medium uppercase text-[10px] tracking-wider block">Durability:</strong>
-                    {material.durability}
-                  </p>
-                  <p>
-                    <strong className="text-foreground font-medium uppercase text-[10px] tracking-wider block">Finish:</strong>
-                    {material.finish}
-                  </p>
-                  <p>
-                    <strong className="text-foreground font-medium uppercase text-[10px] tracking-wider block">Best For:</strong>
-                    {material.bestFor}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-                  <div className="text-xs text-muted-foreground">
-                    Products from <span className="text-sm font-semibold text-foreground font-serif">{material.price}</span>
+                  <div className="space-y-2 text-xs text-muted-foreground font-light leading-relaxed">
+                    <p>
+                      <strong className="text-foreground/90 font-medium font-mono text-[11px] block">
+                        Durability:
+                      </strong>
+                      {material.durability}
+                    </p>
+                    <p>
+                      <strong className="text-foreground/90 font-medium font-mono text-[11px] block">
+                        Surface Finish:
+                      </strong>
+                      {material.finish}
+                    </p>
+                    <p>
+                      <strong className="text-foreground/90 font-medium font-mono text-[11px] block">
+                        Ideal For:
+                      </strong>
+                      {material.recommendedFor}
+                    </p>
                   </div>
-                  
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="rounded-none text-[10px] tracking-wider uppercase"
-                    onClick={() => handleShopRedirect(material.category)}
-                    data-testid={`btn-shop-material-${idx}`}
+                </div>
+
+                <div className="pt-4 border-t border-white/5">
+                  <button
+                    onClick={() => handleFilterByCategory(material.type)}
+                    className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-primary hover:underline"
                   >
-                    Shop This Material
-                  </Button>
+                    <span>View {material.name} Products</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
             </div>

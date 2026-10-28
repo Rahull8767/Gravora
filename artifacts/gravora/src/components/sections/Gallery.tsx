@@ -1,145 +1,99 @@
 import { useState } from "react";
-import { X, ZoomIn, ShoppingBag } from "lucide-react";
+import { X, ZoomIn, ArrowRight } from "lucide-react";
+import { SiWhatsapp } from "react-icons/si";
 import { Button } from "@/components/ui/button";
-
-interface GalleryImage {
-  src: string;
-  aspect: string;
-  productName: string;
-  price: string;
-  productId: string;
-}
+import { GALLERY_ITEMS, type GalleryItem } from "@/data/products";
+import { buildWhatsAppUrl } from "@/config/site";
 
 interface GalleryProps {
   setCustomizingProductId: (id: string | null) => void;
 }
 
 export function Gallery({ setCustomizingProductId }: GalleryProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
 
-  const images: GalleryImage[] = [
-    { 
-      src: "/gallery-1.png", 
-      aspect: "aspect-[3/4]", 
-      productName: "Premium Wood Portrait", 
-      price: "₹___", 
-      productId: "wood-portrait" 
-    },
-    { 
-      src: "/gallery-2.png", 
-      aspect: "aspect-[4/3]", 
-      productName: "Slate Stone Plaque", 
-      price: "₹___", 
-      productId: "slate-plaque" 
-    },
-    { 
-      src: "/product-wood.png", 
-      aspect: "aspect-square", 
-      productName: "Premium Wood Portrait", 
-      price: "₹___", 
-      productId: "wood-portrait" 
-    },
-    { 
-      src: "/product-stone.png", 
-      aspect: "aspect-[3/4]", 
-      productName: "Slate Stone Plaque", 
-      price: "₹___", 
-      productId: "slate-plaque" 
-    },
-    { 
-      src: "/product-decor.png", 
-      aspect: "aspect-square", 
-      productName: "Sacred Geometry Mandala", 
-      price: "₹___", 
-      productId: "wall-decor" 
-    },
-    { 
-      src: "/product-gift.png", 
-      aspect: "aspect-[4/3]", 
-      productName: "Luxury Keepsake Box", 
-      price: "₹___", 
-      productId: "keepsake-box" 
-    },
-    { 
-      src: "/product-cafe.png", 
-      aspect: "aspect-[3/4]", 
-      productName: "Bespoke Coaster Set", 
-      price: "₹___", 
-      productId: "coaster-set" 
-    },
-    { 
-      src: "/material-wood.png", 
-      aspect: "aspect-square", 
-      productName: "Premium Tactile Keychain", 
-      price: "₹___", 
-      productId: "leather-keychain" 
-    },
-  ];
+  const handleEnquireSimilar = (item: GalleryItem) => {
+    const message = `Hi Gravora! I saw "${item.title}" (${item.material}) in your workshop portfolio and would like to order a similar custom engraved piece. Could you please guide me?`;
+    const { url } = buildWhatsAppUrl(message);
+    window.open(url, "_blank");
+  };
 
   return (
-    <section id="gallery" className="py-24 bg-background">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+    <section id="gallery" className="py-20 md:py-28 bg-background border-t border-white/10">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-6xl">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div className="max-w-2xl">
-            <h2 className="text-sm font-medium tracking-[0.2em] text-primary uppercase mb-4">Portfolio</h2>
-            <h3 className="text-4xl md:text-5xl font-serif font-bold text-foreground">Shoppable Gallery</h3>
+            <span className="text-[11px] font-mono text-primary uppercase tracking-[0.2em] block mb-3">
+              Craftsmanship In Situ
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground">
+              Workshop Portfolio
+            </h2>
+            <p className="text-muted-foreground font-light mt-3 leading-relaxed text-sm sm:text-base">
+              Explore recent personalized pieces, from anniversary plaques to corporate coaster suites.
+              Tap any item to examine the material finish or commission a similar creation.
+            </p>
           </div>
-          <p className="text-muted-foreground font-light max-w-md md:text-right">
-            Browse our curated works. Hover or tap on any piece to see product details and start customizing your own version instantly.
-          </p>
         </div>
 
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
-          {images.map((img, i) => (
-            <div 
-              key={i} 
-              className={`relative overflow-hidden group border border-white/5 break-inside-avoid shadow-sm hover:shadow-xl transition-all duration-300 ${img.aspect}`}
-              data-testid={`img-gallery-${i}`}
+        {/* Masonry / Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {GALLERY_ITEMS.map((item) => (
+            <div
+              key={item.id}
+              className={`relative overflow-hidden rounded-lg border border-white/10 bg-card group shadow-sm hover:shadow-xl transition-all duration-300 ${item.aspect}`}
+              data-testid={`gallery-item-${item.id}`}
             >
-              {/* Product Image */}
-              <img 
-                src={img.src} 
-                alt={img.productName} 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              <img
+                src={item.img}
+                alt={item.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
               />
 
               {/* Hover / Tap Shoppable Overlay */}
-              <div className="absolute inset-0 bg-zinc-950/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-6 z-10">
-                {/* Top bar: Zoom */}
+              <div className="absolute inset-0 bg-zinc-950/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-5 z-10">
                 <div className="flex justify-end">
-                  <button 
-                    onClick={() => setSelectedImage(img.src)}
-                    className="p-2 border border-white/10 hover:border-primary/50 text-muted-foreground hover:text-foreground transition-all duration-200"
+                  <button
+                    onClick={() => setSelectedItem(item)}
+                    className="p-2 rounded border border-white/15 bg-white/5 hover:border-primary/50 text-muted-foreground hover:text-foreground transition-colors"
                     title="Zoom Image"
+                    aria-label={`Enlarge photo of ${item.title}`}
                   >
                     <ZoomIn className="w-4 h-4" />
                   </button>
                 </div>
 
-                {/* Bottom section: Info and Shop CTA */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div>
-                    <h4 className="text-lg font-serif font-bold text-foreground">{img.productName}</h4>
-                    <span className="text-sm font-mono text-primary font-medium">{img.price}</span>
+                    <span className="text-[10px] font-mono text-primary uppercase tracking-widest block">
+                      {item.material} • {item.category}
+                    </span>
+                    <h3 className="text-base font-serif font-bold text-foreground mt-0.5">
+                      {item.title}
+                    </h3>
                   </div>
-                  
-                  <div className="grid grid-cols-1 gap-2">
-                    <Button 
-                      size="sm" 
-                      className="rounded-none text-[10px] tracking-widest uppercase gap-2"
-                      onClick={() => setCustomizingProductId(img.productId)}
-                    >
-                      <ShoppingBag className="w-3.5 h-3.5" />
-                      Shop This
-                    </Button>
-                    <Button 
+
+                  <div className="flex flex-col gap-2 pt-1">
+                    {item.linkedProductId && (
+                      <Button
+                        size="sm"
+                        className="h-8 rounded text-[11px] font-mono tracking-wider uppercase bg-primary hover:bg-primary/90 text-primary-foreground justify-center"
+                        onClick={() => setCustomizingProductId(item.linkedProductId!)}
+                      >
+                        <span>Customise This</span>
+                        <ArrowRight className="w-3 h-3 ml-1.5" />
+                      </Button>
+                    )}
+
+                    <Button
                       variant="outline"
-                      size="sm" 
-                      className="rounded-none text-[10px] tracking-widest uppercase border-white/10"
-                      onClick={() => setCustomizingProductId(img.productId)}
+                      size="sm"
+                      className="h-8 rounded text-[11px] font-mono tracking-wider uppercase border-white/20 text-foreground hover:border-[#25D366] hover:text-[#25D366] justify-center gap-1.5"
+                      onClick={() => handleEnquireSimilar(item)}
                     >
-                      Order Similar
+                      <SiWhatsapp className="w-3 h-3" />
+                      <span>Order Similar</span>
                     </Button>
                   </div>
                 </div>
@@ -150,25 +104,41 @@ export function Gallery({ setCustomizingProductId }: GalleryProps) {
       </div>
 
       {/* Lightbox Modal */}
-      {selectedImage && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
-          onClick={() => setSelectedImage(null)}
-          data-testid="modal-lightbox"
+      {selectedItem && (
+        <div
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setSelectedItem(null)}
+          role="dialog"
+          aria-modal="true"
         >
-          <button 
-            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2 border border-white/10 bg-zinc-950/80 backdrop-blur-sm"
-            onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
-            data-testid="button-close-lightbox"
+          <button
+            className="absolute top-5 right-5 text-white/80 hover:text-white transition-colors p-2.5 rounded-full border border-white/20 bg-zinc-950/80 backdrop-blur-md"
+            onClick={() => setSelectedItem(null)}
+            aria-label="Close enlarged view"
           >
-            <X size={24} />
+            <X size={20} />
           </button>
-          <img 
-            src={selectedImage} 
-            alt="Enlarged view" 
-            className="max-w-full max-h-[90vh] object-contain shadow-2xl border border-white/10"
+
+          <div
+            className="max-w-3xl w-full max-h-[90vh] flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
-          />
+          >
+            <div className="rounded-lg overflow-hidden border border-white/15 shadow-2xl bg-zinc-950 max-h-[75vh]">
+              <img
+                src={selectedItem.img}
+                alt={selectedItem.title}
+                className="max-w-full max-h-[75vh] object-contain"
+              />
+            </div>
+            <div className="mt-4 text-center">
+              <p className="text-xs font-mono uppercase tracking-widest text-primary">
+                {selectedItem.material} • {selectedItem.category}
+              </p>
+              <h4 className="text-lg font-serif font-bold text-foreground mt-1">
+                {selectedItem.title}
+              </h4>
+            </div>
+          </div>
         </div>
       )}
     </section>

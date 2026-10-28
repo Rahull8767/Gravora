@@ -1,39 +1,65 @@
-import { Star } from "lucide-react";
+import { Shield, Sparkles, MessageCircle, HeartHandshake } from "lucide-react";
 
 export function Testimonials() {
-  const reviews = [
+  const standards = [
     {
-      text: "The detail on the wooden portrait we ordered for our anniversary was breathtaking. It literally brought my husband to tears.",
-      author: "Priya S.",
-      role: "Gift Buyer"
+      icon: <Shield className="w-5 h-5 text-primary" />,
+      title: "Hand-Selected Canvases",
+      desc: "Every slab of teak, mango wood, or split slate is individually inspected for grain stability and density before cutting.",
     },
     {
-      text: "Gravora handled all the wooden signage for my new cafe. It gave the place exactly the premium, tactile feel I wanted.",
-      author: "Rohan M.",
-      role: "Cafe Owner"
+      icon: <Sparkles className="w-5 h-5 text-primary" />,
+      title: "Micron-Level Precision",
+      desc: "Our calibrated laser optics etch with sub-millimeter fidelity, reproducing fine photographic details, crisp typography, and vector crests.",
     },
     {
-      text: "I uploaded a very rough sketch of a family crest. They turned it into a stunning piece of slate art. True artisans.",
-      author: "Arjun K.",
-      role: "Custom Order"
-    }
+      icon: <MessageCircle className="w-5 h-5 text-primary" />,
+      title: "Direct WhatsApp Proofing",
+      desc: "No automated black holes. You review your design preview and communicate directly with our workshop before we start engraving.",
+    },
+    {
+      icon: <HeartHandshake className="w-5 h-5 text-primary" />,
+      title: "Safe Heritage Packaging",
+      desc: "Wood and stone demand care. Every piece is wrapped in moisture-resistant buffers and reinforced boxing to arrive safely anywhere in India.",
+    },
   ];
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden border-t border-white/5">
-      <div className="container mx-auto px-6 relative z-10">
-        <h3 className="text-3xl md:text-4xl font-serif font-bold text-center mb-16">Words from Patrons</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {reviews.map((review, i) => (
-            <div key={i} className="p-8 border border-white/5 bg-card relative">
-              <div className="flex gap-1 mb-6 text-primary">
-                {[1,2,3,4,5].map(star => <Star key={star} size={16} fill="currentColor" />)}
-              </div>
-              <p className="text-foreground font-light mb-8 italic">"{review.text}"</p>
+    <section className="py-20 md:py-28 bg-background relative border-t border-white/10">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-6xl">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-[11px] font-mono text-primary uppercase tracking-[0.2em] block mb-3">
+            The Gravora Standard
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground">
+            Built on Honest Craftsmanship
+          </h2>
+          <p className="text-muted-foreground font-light mt-3 leading-relaxed text-sm sm:text-base">
+            We don't rely on synthetic marketing claims or mass-production shortcuts. Every piece represents hours of
+            material selection, digital proofing, and hand finishing.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {standards.map((item) => (
+            <div
+              key={item.title}
+              className="bg-card border border-white/10 rounded-lg p-6 flex flex-col justify-between hover:border-primary/40 transition-colors duration-300"
+            >
               <div>
-                <p className="font-serif font-bold text-foreground">{review.author}</p>
-                <p className="text-sm text-muted-foreground tracking-widest uppercase">{review.role}</p>
+                <div className="w-10 h-10 rounded border border-primary/30 bg-primary/10 flex items-center justify-center mb-4">
+                  {item.icon}
+                </div>
+                <h3 className="text-lg font-serif font-bold text-foreground mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground font-light leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+
+              <div className="mt-5 pt-3 border-t border-white/5 flex items-center text-[10px] font-mono text-primary uppercase tracking-widest">
+                <span>Gravora Quality</span>
               </div>
             </div>
           ))}

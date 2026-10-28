@@ -45,7 +45,11 @@ app.get(/.*/, (req, res, next) => {
   if (req.path.startsWith("/api")) {
     return next();
   }
-  res.sendFile(path.join(publicPath, "index.html"));
+  res.sendFile(path.join(publicPath, "index.html"), (err) => {
+    if (err) {
+      next(err);
+    }
+  });
 });
 
 export default app;

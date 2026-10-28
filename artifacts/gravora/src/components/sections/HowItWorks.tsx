@@ -1,44 +1,76 @@
-import { Upload, PenTool, Truck } from "lucide-react";
+import { Layers, MessageSquareShare, FileCheck2, PackageCheck } from "lucide-react";
 
 export function HowItWorks() {
   const steps = [
     {
-      icon: <Upload className="w-8 h-8 text-primary" />,
-      title: "Upload Your Vision",
-      desc: "Share your idea, design, or emotional prompt. We accept sketches, vectors, or simple text descriptions."
+      stepNumber: "01",
+      icon: <Layers className="w-6 h-6 text-primary" />,
+      title: "Choose or Describe",
+      desc: "Select a signature item from our catalogue or describe your custom wood or stone vision with approximate dimensions.",
     },
     {
-      icon: <PenTool className="w-8 h-8 text-primary" />,
-      title: "Artisan Crafting",
-      desc: "Our master craftsmen translate your vision onto premium materials using high-precision laser tech."
+      stepNumber: "02",
+      icon: <MessageSquareShare className="w-6 h-6 text-primary" />,
+      title: "Connect on WhatsApp",
+      desc: "Tap any product to open WhatsApp with your chosen specifications. Share your reference photograph, crest, or vector logo directly.",
     },
     {
-      icon: <Truck className="w-8 h-8 text-primary" />,
-      title: "Delivered Locally",
-      desc: "Beautifully packaged in our signature box and delivered directly to your hands or your loved one."
-    }
+      stepNumber: "03",
+      icon: <FileCheck2 className="w-6 h-6 text-primary" />,
+      title: "Proof & Quotation",
+      desc: "Our artisans review your graphic contrast, recommend the best wood/stone substrate, and provide an exact quotation for your approval.",
+    },
+    {
+      stepNumber: "04",
+      icon: <PackageCheck className="w-6 h-6 text-primary" />,
+      title: "Crafted & Dispatched",
+      desc: "Once confirmed, your piece is precision laser-burned, hand-finished with organic oils, safely packed in protective cushioning, and shipped.",
+    },
   ];
 
   return (
-    <section id="custom-order" className="py-24 bg-card relative">
-      <div className="container mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-20">
-          <h2 className="text-sm font-medium tracking-[0.2em] text-primary uppercase mb-4">The Process</h2>
-          <h3 className="text-4xl md:text-5xl font-serif font-bold text-foreground">From Idea to Heirloom</h3>
+    <section id="how-it-works" className="py-20 md:py-28 bg-card/60 relative border-t border-white/10">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-6xl">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-[11px] font-mono text-primary uppercase tracking-[0.2em] block mb-3">
+            Simple & Transparent
+          </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground">
+            How Gravora Works
+          </h2>
+          <p className="text-muted-foreground font-light mt-3 leading-relaxed text-sm sm:text-base">
+            From your concept to an enduring heirloom. We keep communication direct, personal, and grounded in craftsmanship.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-          {/* Connector Line (Desktop) */}
-          <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          {steps.map((step) => (
+            <div
+              key={step.stepNumber}
+              className="bg-background/80 border border-white/10 rounded-lg p-6 relative flex flex-col justify-between group hover:border-primary/40 transition-all duration-300"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-12 h-12 rounded border border-primary/30 bg-primary/10 flex items-center justify-center">
+                    {step.icon}
+                  </div>
+                  <span className="text-2xl font-serif font-bold text-white/15 group-hover:text-primary/40 transition-colors">
+                    {step.stepNumber}
+                  </span>
+                </div>
 
-          {steps.map((step, i) => (
-            <div key={step.title} className="relative flex flex-col items-center text-center group">
-              <div className="w-24 h-24 rounded-full bg-background border border-primary/20 flex items-center justify-center mb-8 relative z-10 group-hover:border-primary transition-colors duration-500 group-hover:shadow-[0_0_30px_rgba(var(--primary),0.2)]">
-                {step.icon}
-                <div className="absolute -bottom-4 right-0 text-5xl font-serif font-bold text-white/5 select-none">{i + 1}</div>
+                <h3 className="text-lg font-serif font-bold text-foreground mb-2">
+                  {step.title}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-muted-foreground font-light leading-relaxed">
+                  {step.desc}
+                </p>
               </div>
-              <h4 className="text-2xl font-serif font-bold mb-4">{step.title}</h4>
-              <p className="text-muted-foreground font-light leading-relaxed max-w-xs">{step.desc}</p>
+
+              <div className="mt-6 pt-4 border-t border-white/5 flex items-center text-[11px] font-mono text-primary">
+                <span>Step {step.stepNumber}</span>
+              </div>
             </div>
           ))}
         </div>
