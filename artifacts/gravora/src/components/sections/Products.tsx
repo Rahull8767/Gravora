@@ -1,363 +1,349 @@
-import { useState, useEffect } from "react";
-import { X, Check, Upload, Info } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Search, Heart, Sparkles, Filter, X, ArrowUpDown, ArrowRight } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import { Button } from "@/components/ui/button";
-import { PRODUCTS, CATEGORIES, type Product } from "@/data/products";
-import { buildProductInquiry } from "@/lib/whatsapp";
+import { CATEGORIES, type Product } from "@/data/products";
+import { useWishlist } from "@/components/shared/WishlistContext";
+import { buildProductWhatsAppInquiry } from "@/lib/whatsapp";
 
 interface ProductsProps {
+  products: Product[];
   activeCategory: string;
   setActiveCategory: (cat: string) => void;
-  customizingProductId: string | null;
-  setCustomizingProductId: (id: string | null) => void;
+  onSelectProduct: (product: Product) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
 }
 
 export function Products({
+  products,
   activeCategory,
   setActiveCategory,
-  customizingProductId,
-  setCustomizingProductId,
+  onSelectProduct,
+  searchQuery,
+  setSearchQuery,
 }: ProductsProps) {
-  // Modal customization states
-  const [selectedSize, setSelectedSize] = useState<string>("");
-  const [selectedMaterial, setSelectedMaterial] = useState<string>("");
-  const [quantity, setQuantity] = useState<number>(1);
-  const [customText, setCustomText] = useState<string>("");
-  const [specialInstructions, setSpecialInstructions] = useState<string>("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
-  const currentProduct = PRODUCTS.find((p) => p.id === customizingProductId) || null;
+  const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc">("featured");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  useEffect(() => {
-    if (currentProduct) {
-      setSelectedSize(currentProduct.availableSizes[0] || "");
-      setSelectedMaterial(currentProduct.primaryMaterial);
-      setQuantity(1);
-      setCustomText("");
-      setSpecialInstructions("");
-      setSelectedFile(null);
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+  // Filtering and sorting
+  const filteredProducts = useMemo(() => {
+    let list = [...products];
+
+    // Category filter
+    if (activeCategory !== "all") {
+      list = list.filter((p) => p.category === activeCategory);
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [currentProduct]);
 
-  const filteredProducts =
-    activeCategory === "all"
-      ? PRODUCTS
-      : PRODUCTS.filter((p) => p.category === activeCategory);
+    // Status filter
+    if (statusFilter === "personalizable") {
+      list = list.filter((p) => p.isPersonalizable);
+    } else if (statusFilter === "available") {
+      list = list.filter((p) => p.isAvailable);
+    } else if (statusFilter === "concept") {
+      list = list.filter((p) => p.badge === "Concept Preview" || p.badge === "Coming Soon");
+    }
 
-  const handleModalWhatsAppOrder = () => {
-    if (!currentProduct) return;
-    const { url } = buildProductInquiry({
-      product: currentProduct,
-      selectedSize,
-      selectedMaterial,
-      quantity,
-      customText,
-      hasFileAttached: selectedFile !== null,
-      fileName: selectedFile ? selectedFile.name : undefined,
-      specialInstructions,
+    // Search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.shortDesc.toLowerCase().includes(q) ||
+          p.primaryMaterial.toLowerCase().includes(q) ||
+          p.code.toLowerCase().includes(q)
+      );
+    }
+
+    // Sorting
+    if (sortBy === "price-asc") {
+      list.sort((a, b) => a.priceValue - b.priceValue);
+    } else if (sortBy === "price-desc") {
+      list.sort((a, b) => b.priceValue - a.priceValue);
+    }
+
+    return list;
+  }, [products, activeCategory, statusFilter, searchQuery, sortBy]);
+
+  const handleQuickWhatsApp = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    const { url } = buildProductWhatsAppInquiry({
+      product,
+      quantity: 1,
     });
     window.open(url, "_blank");
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
-    }
+  const handleWishlistToggle = (e: React.MouseEvent, productId: string) => {
+    e.stopPropagation();
+    toggleWishlist(productId);
+  };
+
+  const resetAllFilters = () => {
+    setActiveCategory("all");
+    setStatusFilter("all");
+    setSearchQuery("");
+    setSortBy("featured");
   };
 
   return (
-    <section id="products" className="py-12 sm:py-16 md:py-20 bg-background relative">
+    <section id="shop" className="py-16 sm:py-24 bg-[#FFFDF9] border-b border-[#E6DED2] relative">
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
-          <div>
-            <p className="text-[11px] font-mono text-primary uppercase tracking-[0.2em] mb-1.5 font-medium">
-              Catalogue
+        {/* Section Title Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-6">
+          <div className="space-y-2 text-left">
+            <p className="text-xs font-mono uppercase tracking-[0.22em] text-[#9A6428] font-semibold">
+              Complete Catalogue
             </p>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground">
-              Signature Creations
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#29231E]">
+              Pieces Worth Keeping
             </h2>
+            <p className="text-sm sm:text-base text-[#71685F] font-light max-w-xl">
+              Authentic pricing in Indian Rupees. Starting prices are shown for personalizable designs; exact totals and shipping are confirmed directly with our founders on WhatsApp.
+            </p>
           </div>
 
-          {/* Minimal Category Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none" role="tablist">
+          {/* Quick Search Bar */}
+          <div className="relative w-full md:w-72">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#71685F]" />
+            <input
+              type="text"
+              placeholder="Search by piece, material..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-9 py-2.5 text-xs sm:text-sm bg-[#F8F5EF] rounded-xl border border-[#E6DED2] focus:outline-none focus:border-[#9A6428] focus:bg-white transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#71685F] hover:text-[#29231E]"
+                aria-label="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter & Sorting Controls */}
+        <div className="space-y-4 mb-8">
+          {/* Category Tabs */}
+          <div
+            className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none"
+            role="tablist"
+          >
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 role="tab"
                 aria-selected={activeCategory === cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded text-xs font-mono tracking-wider transition-colors whitespace-nowrap ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all whitespace-nowrap shrink-0 ${
                   activeCategory === cat.id
-                    ? "bg-foreground text-background font-medium"
-                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                    ? "bg-[#9A6428] text-white shadow-sm"
+                    : "bg-[#F8F5EF] text-[#71685F] hover:text-[#29231E] hover:bg-[#EFE8DD] border border-[#E6DED2]"
                 }`}
-                data-testid={`category-tab-${cat.id}`}
               >
                 {cat.label}
               </button>
             ))}
           </div>
-        </div>
 
-        {/* 2-Column on Mobile, 3-Column on Tablet/Desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-6">
-          {filteredProducts.map((product) => (
-            <article
-              key={product.id}
-              onClick={() => setCustomizingProductId(product.id)}
-              className="group cursor-pointer flex flex-col text-left rounded overflow-hidden bg-card/40 border border-border/50 hover:border-border transition-colors"
-              data-testid={`product-card-${product.id}`}
-            >
-              {/* Product Photography */}
-              <div className="relative aspect-square overflow-hidden bg-card">
-                <img
-                  src={product.img}
-                  alt={product.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-
-              {/* Product Info */}
-              <div className="p-3 sm:p-4 flex flex-col justify-between flex-grow space-y-2">
-                <div>
-                  <h3 className="text-sm sm:text-base font-serif font-semibold text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2">
-                    {product.title}
-                  </h3>
-                  <p className="text-[11px] sm:text-xs font-mono text-primary font-medium mt-1">
-                    {product.startingPrice}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-border/30 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
-                  <span className="hidden sm:inline">{product.primaryMaterial}</span>
-                  <span className="text-foreground group-hover:underline text-[10px] sm:text-xs">
-                    Customise & Enquire →
-                  </span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      {/* Product Customisation Modal */}
-      {currentProduct && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-150 overflow-y-auto"
-          onClick={() => setCustomizingProductId(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-        >
-          <div
-            className="relative bg-background border border-border rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl my-auto text-left"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md px-5 sm:px-6 py-4 border-b border-border flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary block">
-                  {currentProduct.categoryLabel}
-                </span>
-                <h3 id="modal-title" className="text-lg sm:text-xl font-serif font-bold text-foreground">
-                  {currentProduct.title}
-                </h3>
-              </div>
-
+          {/* Secondary Controls: Status & Sort */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[#E6DED2]/60 text-xs">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[#71685F] font-medium flex items-center gap-1">
+                <Filter className="w-3.5 h-3.5 text-[#9A6428]" /> Filter:
+              </span>
               <button
-                className="min-w-[44px] min-h-[44px] -mr-2 rounded text-muted-foreground hover:text-foreground hover:bg-white/10 transition-colors flex items-center justify-center"
-                onClick={() => setCustomizingProductId(null)}
-                aria-label="Close modal"
-                data-testid="btn-close-modal"
+                onClick={() => setStatusFilter("all")}
+                className={`px-2.5 py-1 rounded-md text-[11px] ${
+                  statusFilter === "all"
+                    ? "bg-[#704522] text-white"
+                    : "text-[#71685F] hover:bg-[#F8F5EF]"
+                }`}
               >
-                <X className="w-5 h-5" />
+                All Status
+              </button>
+              <button
+                onClick={() => setStatusFilter("personalizable")}
+                className={`px-2.5 py-1 rounded-md text-[11px] ${
+                  statusFilter === "personalizable"
+                    ? "bg-[#704522] text-white"
+                    : "text-[#71685F] hover:bg-[#F8F5EF]"
+                }`}
+              >
+                Personalizable
+              </button>
+              <button
+                onClick={() => setStatusFilter("available")}
+                className={`px-2.5 py-1 rounded-md text-[11px] ${
+                  statusFilter === "available"
+                    ? "bg-[#704522] text-white"
+                    : "text-[#71685F] hover:bg-[#F8F5EF]"
+                }`}
+              >
+                Ready to Order
+              </button>
+              <button
+                onClick={() => setStatusFilter("concept")}
+                className={`px-2.5 py-1 rounded-md text-[11px] ${
+                  statusFilter === "concept"
+                    ? "bg-[#704522] text-white"
+                    : "text-[#71685F] hover:bg-[#F8F5EF]"
+                }`}
+              >
+                Concept / Enquire
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-5 sm:p-6 space-y-5">
-              {/* Image & Price Summary */}
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 items-start">
-                <div className="sm:col-span-5 rounded overflow-hidden aspect-square bg-card border border-border/60">
-                  <img
-                    src={currentProduct.img}
-                    alt={currentProduct.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                <div className="sm:col-span-7 space-y-2">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs font-mono text-muted-foreground uppercase">Base Pricing</span>
-                    <span className="text-base font-serif font-bold text-primary">
-                      {currentProduct.startingPrice}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground font-light">{currentProduct.priceNote}</p>
-                  <p className="text-xs text-foreground/90 font-light leading-relaxed pt-1">
-                    {currentProduct.fullDesc}
-                  </p>
-                </div>
-              </div>
-
-              {/* Options */}
-              <div className="space-y-4 pt-3 border-t border-border">
-                {/* Size Selection */}
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground block mb-1.5">
-                    1. Choose Size
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {currentProduct.availableSizes.map((size) => (
-                      <button
-                        key={size}
-                        type="button"
-                        onClick={() => setSelectedSize(size)}
-                        className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors ${
-                          selectedSize === size
-                            ? "bg-foreground text-background border-foreground font-medium"
-                            : "bg-card border-border text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Material Selection */}
-                <div>
-                  <label className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground block mb-1.5">
-                    2. Choose Material Canvas
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {currentProduct.availableMaterials.map((mat) => (
-                      <button
-                        key={mat}
-                        type="button"
-                        onClick={() => setSelectedMaterial(mat)}
-                        className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors ${
-                          selectedMaterial === mat
-                            ? "bg-foreground text-background border-foreground font-medium"
-                            : "bg-card border-border text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {mat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Engraving Custom Text */}
-                {currentProduct.customisationOptions.allowsText && (
-                  <div>
-                    <label
-                      htmlFor="customText"
-                      className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground block mb-1.5"
-                    >
-                      3. Custom Inscription / Names (Optional)
-                    </label>
-                    <input
-                      id="customText"
-                      type="text"
-                      value={customText}
-                      onChange={(e) => setCustomText(e.target.value)}
-                      placeholder={
-                        currentProduct.customisationOptions.textPlaceholder ||
-                        "Names, anniversary date, or special quote..."
-                      }
-                      className="w-full h-10 px-3 bg-card border border-border rounded text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary"
-                    />
-                  </div>
-                )}
-
-                {/* Quantity and Design File Picker */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground block mb-1.5">
-                      Quantity
-                    </label>
-                    <div className="flex items-center w-28 border border-border rounded bg-card">
-                      <button
-                        type="button"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-9 h-9 flex items-center justify-center text-muted-foreground hover:text-foreground border-r border-border"
-                        aria-label="Decrease quantity"
-                      >
-                        -
-                      </button>
-                      <span className="flex-grow text-center text-xs font-mono font-medium">
-                        {quantity}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="w-9 h-9 flex items-center justify-center text-muted-foreground hover:text-foreground border-l border-border"
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  {currentProduct.customisationOptions.allowsPhotoUpload && (
-                    <div>
-                      <label className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground block mb-1.5">
-                        Photo / Reference
-                      </label>
-                      <label className="flex items-center justify-center gap-2 h-9 px-3 bg-card border border-border rounded cursor-pointer text-xs font-mono text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors">
-                        <Upload className="w-3.5 h-3.5 text-primary" />
-                        <span className="truncate max-w-[160px]">
-                          {selectedFile ? selectedFile.name : "Select photo for reference"}
-                        </span>
-                        <input
-                          type="file"
-                          accept="image/*,.pdf,.svg"
-                          className="hidden"
-                          onChange={handleFileChange}
-                        />
-                      </label>
-                    </div>
-                  )}
-                </div>
-
-                {selectedFile && (
-                  <div className="p-2.5 rounded bg-card border border-border flex items-start gap-2 text-xs text-muted-foreground">
-                    <Info className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                    <span>
-                      Please also attach your high-res original photo directly in WhatsApp when the chat opens.
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Modal CTA Button */}
-              <div className="pt-4 border-t border-border">
-                <Button
-                  size="lg"
-                  className="w-full h-11 rounded bg-[#25D366] hover:bg-[#1ebe5d] text-white font-mono text-xs uppercase tracking-widest gap-2 shadow-sm"
-                  onClick={handleModalWhatsAppOrder}
-                  data-testid="btn-order-modal-whatsapp"
-                >
-                  <SiWhatsapp className="w-4 h-4" />
-                  <span>Enquire on WhatsApp</span>
-                </Button>
-                <p className="text-[11px] text-muted-foreground text-center mt-2 font-light">
-                  Opens WhatsApp with your product details and chosen specifications prefilled.
-                </p>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[#71685F] font-medium flex items-center gap-1">
+                <ArrowUpDown className="w-3.5 h-3.5 text-[#9A6428]" /> Sort:
+              </span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="bg-[#F8F5EF] border border-[#E6DED2] rounded-lg px-2.5 py-1 text-xs text-[#29231E] focus:outline-none focus:border-[#9A6428]"
+              >
+                <option value="featured">Featured First</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Product Grid */}
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-20 px-4 rounded-2xl bg-[#F8F5EF] border border-[#E6DED2] space-y-4">
+            <p className="text-base font-serif font-medium text-[#29231E]">
+              No creations found matching your current filter.
+            </p>
+            <p className="text-xs text-[#71685F] max-w-sm mx-auto">
+              Try adjusting your search terms or view our complete catalogue to discover available designs.
+            </p>
+            <Button
+              onClick={resetAllFilters}
+              variant="outline"
+              className="border-[#9A6428] text-[#704522] hover:bg-white"
+            >
+              Reset All Filters
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => {
+              const inWishlist = isInWishlist(product.id);
+
+              return (
+                <div
+                  key={product.id}
+                  onClick={() => onSelectProduct(product)}
+                  className="group cursor-pointer rounded-2xl bg-white border border-[#E6DED2] overflow-hidden card-hover-luxury flex flex-col justify-between"
+                  data-testid={`product-card-${product.code.toLowerCase()}`}
+                >
+                  {/* Image Container with Badges */}
+                  <div className="relative aspect-square overflow-hidden bg-[#F8F5EF]">
+                    <img
+                      src={product.img}
+                      alt={product.title}
+                      className="w-full h-full object-cover img-zoom"
+                      loading="lazy"
+                    />
+
+                    {/* Status Badge */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+                      <span
+                        className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm font-medium ${
+                          product.badge === "Concept Preview" || product.badge === "Coming Soon"
+                            ? "bg-[#704522] text-[#FFFDF9]"
+                            : product.badge === "Personalizable"
+                            ? "bg-[#9A6428] text-white"
+                            : "bg-white/90 text-[#29231E] border border-[#E6DED2]"
+                        }`}
+                      >
+                        {product.badge}
+                      </span>
+                    </div>
+
+                    {/* Wishlist Button */}
+                    <button
+                      onClick={(e) => handleWishlistToggle(e, product.id)}
+                      className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-colors shadow-sm ${
+                        inWishlist
+                          ? "bg-white text-[#9A6428]"
+                          : "bg-white/80 text-[#71685F] hover:text-[#9A6428] hover:bg-white"
+                      }`}
+                      aria-label={inWishlist ? "Remove from saved pieces" : "Save piece"}
+                    >
+                      <Heart className={`w-3.5 h-3.5 ${inWishlist ? "fill-[#9A6428]" : ""}`} />
+                    </button>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between text-[11px] font-mono text-[#9A6428]">
+                        <span>{product.code}</span>
+                        <span className="text-[#71685F]">{product.categoryLabel}</span>
+                      </div>
+
+                      <h3 className="font-serif text-base font-bold text-[#29231E] group-hover:text-[#9A6428] transition-colors mt-1 line-clamp-1">
+                        {product.title}
+                      </h3>
+
+                      <p className="text-xs text-[#71685F] font-light leading-relaxed mt-1 line-clamp-2">
+                        {product.shortDesc}
+                      </p>
+                    </div>
+
+                    {/* Price & Actions */}
+                    <div className="pt-3 border-t border-[#E6DED2]/60 space-y-3">
+                      <div className="flex items-baseline justify-between">
+                        <div>
+                          <span className="font-serif text-base font-bold text-[#704522]">
+                            {product.startingPrice}
+                          </span>
+                          <span className="text-[10px] text-[#71685F] ml-1">
+                            / {product.unitLabel}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectProduct(product);
+                          }}
+                          className="h-8 text-xs font-sans border-[#E6DED2] text-[#29231E] hover:border-[#9A6428] hover:bg-[#F8F5EF]"
+                        >
+                          View Details
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          onClick={(e) => handleQuickWhatsApp(e, product)}
+                          className="h-8 text-xs font-sans bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center gap-1.5"
+                        >
+                          <SiWhatsapp className="w-3 h-3" />
+                          <span>Enquire</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </section>
   );
 }

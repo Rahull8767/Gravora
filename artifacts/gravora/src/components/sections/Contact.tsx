@@ -1,225 +1,212 @@
 import { useState } from "react";
-import { Mail, Clock, MapPin } from "lucide-react";
-import { SiWhatsapp, SiInstagram } from "react-icons/si";
+import { Mail, Clock, MapPin, Send, Sparkles, MessageCircle } from "lucide-react";
+import { SiWhatsapp } from "react-icons/si";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { SITE_CONFIG } from "@/config/site";
-import { buildCustomOrderInquiry } from "@/lib/whatsapp";
+import { SITE_CONFIG, buildWhatsAppUrl } from "@/config/site";
+import { buildBespokeInquiry } from "@/lib/whatsapp";
 
 export function Contact() {
-  const { toast } = useToast();
-  const [customerName, setCustomerName] = useState("");
   const [ideaDescription, setIdeaDescription] = useState("");
-  const [materialPreference, setMaterialPreference] = useState("Solid Teak Wood");
-  const [dimensions, setDimensions] = useState("");
-  const [quantity, setQuantity] = useState("1");
-  const [hasDesignReady, setHasDesignReady] = useState(true);
-  const [specialNotes, setSpecialNotes] = useState("");
+  const [material, setMaterial] = useState("3mm Basswood Plywood");
+  const [dimensions, setDimensions] = useState("120 × 120 mm");
+  const [quantity, setQuantity] = useState(1);
+  const [deliveryPin, setDeliveryPin] = useState("");
+  const [hasArtworkReady, setHasArtworkReady] = useState(false);
 
-  const materials = [
-    "Solid Teak Wood",
-    "Solid Mango Wood",
-    "Natural Slate Stone",
-    "Polished Black Granite",
-    "Raw Kota Stone",
-    "Multi-Layer Birch Wood",
-    "Not Sure — Need Advice",
-  ];
+  const { url: generalUrl } = buildWhatsAppUrl(SITE_CONFIG.whatsapp.defaultMessage);
 
-  const handleCustomSubmit = (e: React.FormEvent) => {
+  const handleBespokeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!ideaDescription.trim()) {
-      toast({
-        title: "Please Describe Your Idea",
-        description: "Tell us a few words about what you would like to have engraved.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const { url } = buildCustomOrderInquiry({
-      customerName,
-      ideaDescription,
-      materialPreference,
-      dimensions,
-      quantity: parseInt(quantity) || 1,
-      hasDesignReady,
-      specialNotes,
+    const { url } = buildBespokeInquiry({
+      conceptDescription: ideaDescription || "Custom Laser Creation",
+      preferredMaterial: material,
+      approxDimensions: dimensions,
+      quantity,
+      deliveryPin,
+      hasArtworkReady,
     });
-
     window.open(url, "_blank");
-
-    toast({
-      title: "Opening WhatsApp Chat",
-      description: "Please tap Send in WhatsApp to deliver your custom enquiry to our studio.",
-    });
   };
 
   return (
-    <section id="custom-order" className="py-12 sm:py-16 md:py-20 bg-card/20 border-t border-border/50 relative">
+    <section id="contact" className="py-16 sm:py-24 bg-[#FFFDF9] border-b border-[#E6DED2]">
       <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
-          {/* Left Column: Brief Explanation & Studio Info */}
-          <div className="md:col-span-5 space-y-5">
-            <div>
-              <p className="text-[11px] font-mono text-primary uppercase tracking-[0.2em] mb-1.5 font-medium">
-                Custom Orders
-              </p>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
-                Bespoke Commissions
-              </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          {/* Contact Details & Consultation Info */}
+          <div className="lg:col-span-5 space-y-6 text-left">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F8F5EF] border border-[#E6DED2] text-xs font-mono uppercase tracking-widest text-[#9A6428] font-semibold">
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>Direct Studio Connection</span>
             </div>
 
-            <p className="text-muted-foreground font-light text-xs sm:text-sm leading-relaxed">
-              Have an anniversary portrait, family monogram, unique dimensions, or bespoke idea?
-              Share your concept and our artisans will review the engraving contrast and provide a tailored quote.
+            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-[#29231E] leading-tight">
+              Let’s Craft Something <br />
+              <span className="italic text-[#704522] font-normal">Memorable.</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-[#71685F] font-light leading-relaxed">
+              Have a bespoke concept, wedding gift requirement, bulk corporate order, or personalized keepsake idea? Speak directly with founders Rahul and Mohit on WhatsApp.
             </p>
 
-            {/* Studio Info */}
-            <div className="pt-4 border-t border-border/40 space-y-2.5 text-xs text-muted-foreground font-light">
-              <div className="flex items-center gap-2.5 text-foreground/90">
-                <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>Handcrafted in {SITE_CONFIG.location}</span>
+            {/* Direct Communication Details */}
+            <div className="p-6 rounded-2xl bg-[#F8F5EF] border border-[#E6DED2] space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-[#25D366] text-white">
+                  <SiWhatsapp className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#71685F]">WhatsApp Business</p>
+                  <a
+                    href={generalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-sm font-bold text-[#29231E] hover:text-[#9A6428]"
+                  >
+                    {SITE_CONFIG.whatsapp.displayNumber}
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center gap-2.5">
-                <Clock className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>{SITE_CONFIG.contact.hours}</span>
+
+              <div className="flex items-center gap-3 pt-3 border-t border-[#E6DED2]">
+                <div className="p-2.5 rounded-xl bg-white border border-[#E6DED2] text-[#9A6428]">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#71685F]">Official Studio Email</p>
+                  <a
+                    href={`mailto:${SITE_CONFIG.contact.email}`}
+                    className="font-sans text-sm font-medium text-[#29231E] hover:text-[#9A6428]"
+                  >
+                    {SITE_CONFIG.contact.displayEmail}
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
-                <a
-                  href={`mailto:${SITE_CONFIG.contact.email}`}
-                  className="hover:text-foreground hover:underline"
-                >
-                  {SITE_CONFIG.contact.displayEmail}
-                </a>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <SiInstagram className="w-3.5 h-3.5 text-primary shrink-0" />
-                <a
-                  href={SITE_CONFIG.social.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground hover:underline"
-                >
-                  {SITE_CONFIG.social.instagramHandle}
-                </a>
+
+              <div className="flex items-center gap-3 pt-3 border-t border-[#E6DED2]">
+                <div className="p-2.5 rounded-xl bg-white border border-[#E6DED2] text-[#9A6428]">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#71685F]">Studio Operating Hours</p>
+                  <p className="font-sans text-xs text-[#29231E]">
+                    {SITE_CONFIG.contact.hours}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Custom Order Form */}
-          <div className="md:col-span-7" id="contact">
-            <div className="bg-card/50 border border-border/60 rounded-lg p-5 sm:p-7">
-              <form onSubmit={handleCustomSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div className="space-y-1">
-                    <Label htmlFor="custom-name" className="text-[11px] font-mono uppercase text-muted-foreground">
-                      Your Name
-                    </Label>
-                    <Input
-                      id="custom-name"
-                      type="text"
-                      placeholder="e.g. Ananya"
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      className="bg-background border-border h-10 text-xs sm:text-sm rounded"
-                    />
-                  </div>
+          {/* Bespoke Enquiry Form */}
+          <div className="lg:col-span-7">
+            <div className="p-6 sm:p-10 rounded-3xl bg-[#F8F5EF] border border-[#E6DED2] shadow-sm">
+              <div className="flex items-center gap-2 mb-6">
+                <Sparkles className="w-4 h-4 text-[#9A6428]" />
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#29231E]">
+                  Bespoke & Custom Order Enquiry
+                </h3>
+              </div>
 
-                  <div className="space-y-1">
-                    <Label htmlFor="custom-material" className="text-[11px] font-mono uppercase text-muted-foreground">
-                      Material Canvas
-                    </Label>
-                    <select
-                      id="custom-material"
-                      value={materialPreference}
-                      onChange={(e) => setMaterialPreference(e.target.value)}
-                      className="w-full bg-background border border-border h-10 px-3 text-xs sm:text-sm text-foreground rounded focus:outline-none focus:border-primary"
-                    >
-                      {materials.map((m) => (
-                        <option key={m} value={m} className="bg-background text-foreground">
-                          {m}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor="custom-idea" className="text-[11px] font-mono uppercase text-muted-foreground">
-                    Describe Your Idea / Requirement *
-                  </Label>
+              <form onSubmit={handleBespokeSubmit} className="space-y-4 text-xs sm:text-sm">
+                <div>
+                  <label className="block text-xs font-semibold text-[#29231E] uppercase tracking-wider mb-1.5">
+                    Describe Your Concept or Gifting Requirement: *
+                  </label>
                   <textarea
-                    id="custom-idea"
                     required
                     rows={3}
-                    placeholder="e.g. Wedding portrait engraved on teak wood with date inscribed below..."
                     value={ideaDescription}
                     onChange={(e) => setIdeaDescription(e.target.value)}
-                    className="w-full bg-background border border-border p-3 text-xs sm:text-sm text-foreground rounded focus:outline-none focus:border-primary resize-y"
+                    placeholder="e.g. 3D layered family nameplate with pine tree backdrop, or custom wedding anniversary plaque with couple names..."
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white rounded-xl border border-[#E6DED2] focus:outline-none focus:border-[#9A6428]"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3.5">
-                  <div className="space-y-1">
-                    <Label htmlFor="custom-dims" className="text-[11px] font-mono uppercase text-muted-foreground">
-                      Size (Optional)
-                    </Label>
-                    <Input
-                      id="custom-dims"
-                      type="text"
-                      placeholder="e.g. 8x10 inches"
-                      value={dimensions}
-                      onChange={(e) => setDimensions(e.target.value)}
-                      className="bg-background border-border h-10 text-xs sm:text-sm rounded"
-                    />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#29231E] uppercase tracking-wider mb-1.5">
+                      Preferred Material:
+                    </label>
+                    <select
+                      value={material}
+                      onChange={(e) => setMaterial(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white rounded-xl border border-[#E6DED2] focus:outline-none focus:border-[#9A6428]"
+                    >
+                      <option value="3mm Basswood Plywood">3mm Laser-Compatible Basswood</option>
+                      <option value="Solid Hardwood & Plinth Base">Solid Hardwood & Plinth Base</option>
+                      <option value="Black Coated Metal Blank">Black Coated Metal Blank</option>
+                      <option value="Natural Split Slate Stone">Natural Split Slate Stone</option>
+                      <option value="Artisan Recommendation">Artisan Recommendation</option>
+                    </select>
                   </div>
 
-                  <div className="space-y-1">
-                    <Label htmlFor="custom-qty" className="text-[11px] font-mono uppercase text-muted-foreground">
-                      Quantity
-                    </Label>
-                    <Input
-                      id="custom-qty"
-                      type="number"
-                      min="1"
-                      value={quantity}
-                      onChange={(e) => setQuantity(e.target.value)}
-                      className="bg-background border-border h-10 text-xs sm:text-sm rounded"
+                  <div>
+                    <label className="block text-xs font-semibold text-[#29231E] uppercase tracking-wider mb-1.5">
+                      Approximate Dimensions:
+                    </label>
+                    <input
+                      type="text"
+                      value={dimensions}
+                      onChange={(e) => setDimensions(e.target.value)}
+                      placeholder="e.g. 120 × 120 mm (Max 150×150mm)"
+                      className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white rounded-xl border border-[#E6DED2] focus:outline-none focus:border-[#9A6428]"
                     />
                   </div>
                 </div>
 
-                <div className="pt-1">
-                  <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#29231E] uppercase tracking-wider mb-1.5">
+                      Target Quantity:
+                    </label>
                     <input
-                      type="checkbox"
-                      checked={hasDesignReady}
-                      onChange={(e) => setHasDesignReady(e.target.checked)}
-                      className="w-3.5 h-3.5 rounded border-border bg-background text-primary accent-primary"
+                      type="number"
+                      min={1}
+                      max={500}
+                      value={quantity}
+                      onChange={(e) => setQuantity(Number(e.target.value))}
+                      className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white rounded-xl border border-[#E6DED2] focus:outline-none focus:border-[#9A6428]"
                     />
-                    <span>I will attach my photo or design in WhatsApp chat</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#29231E] uppercase tracking-wider mb-1.5">
+                      Delivery PIN Code:
+                    </label>
+                    <input
+                      type="text"
+                      maxLength={6}
+                      value={deliveryPin}
+                      onChange={(e) => setDeliveryPin(e.target.value)}
+                      placeholder="e.g. 400001"
+                      className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-white rounded-xl border border-[#E6DED2] focus:outline-none focus:border-[#9A6428]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="artworkCheck"
+                    checked={hasArtworkReady}
+                    onChange={(e) => setHasArtworkReady(e.target.checked)}
+                    className="w-4 h-4 rounded text-[#9A6428] border-[#E6DED2]"
+                  />
+                  <label htmlFor="artworkCheck" className="text-xs text-[#71685F] cursor-pointer">
+                    I have reference sketches, photos, or vector files ready to share on WhatsApp.
                   </label>
                 </div>
 
-                <div className="pt-2">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full h-11 rounded bg-[#25D366] hover:bg-[#1ebe5d] text-white font-mono text-xs uppercase tracking-wider gap-2 shadow-sm"
-                    data-testid="btn-submit-custom-order"
-                  >
-                    <SiWhatsapp className="w-4 h-4" />
-                    <span>Enquire on WhatsApp</span>
-                  </Button>
-                  <p className="text-[11px] text-muted-foreground text-center mt-2 font-light">
-                    Submitting opens WhatsApp with your pre-filled inquiry. You must press <strong>Send</strong> in WhatsApp to deliver it.
-                  </p>
-                </div>
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium text-sm flex items-center justify-center gap-2 rounded-xl shadow-md mt-4"
+                >
+                  <SiWhatsapp className="w-4 h-4" />
+                  <span>Send Enquiry on WhatsApp</span>
+                </Button>
+
+                <p className="text-[11px] text-center text-[#71685F]">
+                  Pre-populates a formatted message to connect with Rahul & Mohit. No payments are requested on this page.
+                </p>
               </form>
             </div>
           </div>

@@ -1,98 +1,130 @@
-import { buildWhatsAppUrl, SITE_CONFIG } from "@/config/site";
+import { buildWhatsAppUrl } from "@/config/site";
 import type { Product } from "@/data/products";
 
-export interface ProductInquiryParams {
+export interface WhatsAppOrderInquiryParams {
   product: Product;
-  selectedSize?: string;
-  selectedMaterial?: string;
-  quantity?: number;
-  customText?: string;
-  hasFileAttached?: boolean;
-  fileName?: string;
-  specialInstructions?: string;
+  quantity: number;
+  selectedVariant?: string;
+  personalizationText?: string;
+  deliveryPin?: string;
+  specialNotes?: string;
 }
 
-export function buildProductInquiry(params: ProductInquiryParams): { url: string; isConfigured: boolean } {
+/**
+ * Builds the exact official enquiry format specified in Section 9 of the Master Prompt:
+ *
+ * Hello Gravora! I would like to enquire about:
+ *
+ * Product: [Product Name]
+ * Product Code: [ID]
+ * Quantity: [Qty]
+ * Selected Variant: [Variant]
+ * Personalization: [Text or 'None']
+ * Delivery PIN: [PIN]
+ *
+ * Please confirm availability, final price, shipping, and delivery time.
+ */
+export function buildProductWhatsAppInquiry(
+  params: WhatsAppOrderInquiryParams
+): { url: string; isConfigured: boolean } {
   const {
     product,
-    selectedSize = product.availableSizes[0] || "Standard",
-    selectedMaterial = product.primaryMaterial,
     quantity = 1,
-    customText = "",
-    hasFileAttached = false,
-    fileName = "",
-    specialInstructions = "",
+    selectedVariant = product.availableVariants?.[0] || "Standard",
+    personalizationText = "",
+    deliveryPin = "",
+    specialNotes = "",
   } = params;
 
-  let message = `Hi Gravora! I'd like to enquire about ordering this item.\n\n`;
-  message += `*Product:* ${product.title}\n`;
-  message += `*Category:* ${product.categoryLabel}\n`;
-  message += `*Selected Size:* ${selectedSize}\n`;
-  message += `*Selected Material:* ${selectedMaterial}\n`;
-  message += `*Quantity:* ${quantity} unit${quantity > 1 ? "s" : ""}\n`;
+  let message = `Hello Gravora! I would like to enquire about:\n\n`;
+  message += `Product: ${product.title}\n`;
+  message += `Product Code: ${product.code}\n`;
+  message += `Quantity: ${quantity}\n`;
+  message += `Selected Variant: ${selectedVariant}\n`;
+  message += `Personalization: ${
+    personalizationText.trim() ? personalizationText.trim() : "None"
+  }\n`;
+  message += `Delivery PIN: ${deliveryPin.trim() ? deliveryPin.trim() : "To be confirmed"}\n`;
 
-  if (customText.trim()) {
-    message += `*Engraving Text:* "${customText.trim()}"\n`;
+  if (specialNotes.trim()) {
+    message += `Notes: ${specialNotes.trim()}\n`;
   }
 
-  if (hasFileAttached) {
-    message += `*Design/Photo File:* Ready to share (${fileName ? fileName : "will attach directly in this chat"})\n`;
-  }
-
-  if (specialInstructions.trim()) {
-    message += `*Special Instructions:* ${specialInstructions.trim()}\n`;
-  }
-
-  message += `\nCould you please confirm pricing, customisation options, and the estimated crafting timeline?`;
+  message += `\nPlease confirm availability, final price, shipping, and delivery time.`;
 
   return buildWhatsAppUrl(message);
 }
 
-export interface CustomOrderInquiryParams {
-  customerName?: string;
-  ideaDescription: string;
-  materialPreference: string;
-  dimensions?: string;
-  quantity?: number;
-  hasDesignReady: boolean;
-  specialNotes?: string;
+export interface WishlistInquiryParams {
+  items: Array<{
+    product: Product;
+    quantity: number;
+    variant?: string;
+  }>;
+  deliveryPin?: string;
 }
 
-export function buildCustomOrderInquiry(params: CustomOrderInquiryParams): { url: string; isConfigured: boolean } {
+export function buildWishlistWhatsAppInquiry(
+  params: WishlistInquiryParams
+): { url: string; isConfigured: boolean } {
+  const { items, deliveryPin = "" } = params;
+
+  let message = `Hello Gravora! I have selected multiple pieces from your collection and would like to check availability and shipping:\n\n`;
+
+  items.forEach((item, index) => {
+    message += `${index + 1}. ${item.product.title} (${item.product.code})\n`;
+    message += `   Qty: ${item.quantity} | Variant: ${item.variant || "Standard"}\n`;
+    message += `   Price: ${item.product.startingPrice}\n\n`;
+  });
+
+  if (deliveryPin.trim()) {
+    message += `Delivery PIN: ${deliveryPin.trim()}\n`;
+  }
+
+  message += `Please confirm overall availability, combined shipping, and delivery timeline.`;
+
+  return buildWhatsAppUrl(message);
+}
+
+export interface CustomBespokeInquiryParams {
+  conceptDescription: string;
+  preferredMaterial: string;
+  approxDimensions?: string;
+  quantity?: number;
+  deliveryPin?: string;
+  hasArtworkReady?: boolean;
+}
+
+export function buildBespokeInquiry(
+  params: CustomBespokeInquiryParams
+): { url: string; isConfigured: boolean } {
   const {
-    customerName = "",
-    ideaDescription,
-    materialPreference,
-    dimensions = "",
+    conceptDescription,
+    preferredMaterial,
+    approxDimensions = "",
     quantity = 1,
-    hasDesignReady,
-    specialNotes = "",
+    deliveryPin = "",
+    hasArtworkReady = false,
   } = params;
 
-  let message = `*NEW CUSTOM ENGRAVING ENQUIRY*\n`;
-  message += `===============================\n\n`;
+  let message = `Hello Gravora! I have a custom bespoke creation request:\n\n`;
+  message += `Concept: ${conceptDescription.trim()}\n`;
+  message += `Material: ${preferredMaterial}\n`;
 
-  if (customerName.trim()) {
-    message += `*From:* ${customerName.trim()}\n`;
+  if (approxDimensions.trim()) {
+    message += `Approx Dimensions: ${approxDimensions.trim()} (Max 150×150mm)\n`;
   }
 
-  message += `*Concept / Idea:* ${ideaDescription.trim()}\n`;
-  message += `*Preferred Material:* ${materialPreference}\n`;
-
-  if (dimensions.trim()) {
-    message += `*Approx. Dimensions:* ${dimensions.trim()}\n`;
-  }
-
-  message += `*Target Quantity:* ${quantity}\n`;
-  message += `*Design File Status:* ${
-    hasDesignReady ? "Yes, I have reference photos/vectors ready to attach" : "Need assistance with designing"
+  message += `Quantity: ${quantity}\n`;
+  message += `Design Artwork: ${
+    hasArtworkReady ? "Yes, ready to attach image/vector" : "Need help with design"
   }\n`;
 
-  if (specialNotes.trim()) {
-    message += `*Notes:* ${specialNotes.trim()}\n`;
+  if (deliveryPin.trim()) {
+    message += `Delivery PIN: ${deliveryPin.trim()}\n`;
   }
 
-  message += `\nCould you please share your feasibility, material suggestions, and a quotation?`;
+  message += `\nPlease share feasibility, recommendations, and pricing.`;
 
   return buildWhatsAppUrl(message);
 }
@@ -136,21 +168,3 @@ export function buildBulkInquiry(params: BulkInquiryParams): { url: string; isCo
   return buildWhatsAppUrl(message);
 }
 
-export interface GeneralContactParams {
-  name: string;
-  emailOrPhone: string;
-  messageText: string;
-}
-
-export function buildGeneralContactInquiry(params: GeneralContactParams): { url: string; isConfigured: boolean } {
-  const { name, emailOrPhone, messageText } = params;
-
-  let message = `*GRAVORA STUDIO ENQUIRY*\n`;
-  message += `----------------------------\n`;
-  message += `*Name:* ${name.trim()}\n`;
-  message += `*Contact:* ${emailOrPhone.trim()}\n`;
-  message += `*Message:* ${messageText.trim()}\n\n`;
-  message += `I'm reaching out through your website. Looking forward to discussing details!`;
-
-  return buildWhatsAppUrl(message);
-}

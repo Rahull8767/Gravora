@@ -1,54 +1,60 @@
 /**
- * Gravora Central Configuration
- * Update business details, WhatsApp Business number, and social links here.
+ * Gravora Central Brand & Business Configuration
+ * Official Brand Identity:
+ * Tagline: CRAFTED TO LEAVE A MARK.
+ * Founders: Rahul & Mohit
  */
 
 export interface SiteConfig {
   name: string;
   tagline: string;
+  founders: string;
+  philosophy: string;
   description: string;
+  announcement: string;
   location: string;
-  // WhatsApp Business Number (country code + number without +, spaces, or dashes)
-  // e.g., "919876543210" for India.
+  machineNote: string;
   whatsapp: {
-    phoneNumber: string; // Set your active 10-12 digit WhatsApp business number here
-    displayNumber: string; // Formatted for display
+    phoneNumber: string; // 10-12 digits without symbols
+    displayNumber: string;
     defaultMessage: string;
   };
   contact: {
-    email: string; // Business email address
+    email: string;
     displayEmail: string;
-    hours: string; // Operating/response hours
+    hours: string;
   };
   social: {
-    instagram: string; // e.g. https://instagram.com/gravorastudio
+    instagram: string;
     instagramHandle: string;
   };
   seo: {
     title: string;
     description: string;
     siteUrl: string;
-    ogImage: string;
   };
 }
 
 export const SITE_CONFIG: SiteConfig = {
   name: "Gravora",
-  tagline: "Crafted Into Forever",
+  tagline: "CRAFTED TO LEAVE A MARK.",
+  founders: "Rahul & Mohit",
+  philosophy:
+    "We do not simply engrave objects. We turn ordinary materials into meaningful pieces that people want to keep, display, and gift.",
   description:
-    "Personalised wooden portraits, custom stone carving, bespoke gifts, and branded merchandise handcrafted with laser precision in India.",
+    "Handcrafted wooden creations, 3D layered Little Worlds art, personalized keepsakes, and thoughtfully designed gifts made to leave a mark.",
+  announcement: "Thoughtfully crafted. Beautifully remembered.",
   location: "India",
+  machineNote:
+    "Every wooden piece is crafted using our Creality Falcon 10W precision laser on 3mm laser-compatible basswood plywood and hand-finished with organic oils.",
 
   whatsapp: {
-    // IMPORTANT: Replace this with your actual WhatsApp Business phone number (digits only, including country code).
-    // Can also be set via VITE_WHATSAPP_PHONE environment variable.
     phoneNumber: import.meta.env.VITE_WHATSAPP_PHONE || "919876543210",
     displayNumber: "+91 98765 43210",
-    defaultMessage: "Hi Gravora! I'd like to enquire about a custom engraving.",
+    defaultMessage: "Hello Gravora! I would like to enquire about your handcrafted collection.",
   },
 
   contact: {
-    // IMPORTANT: Replace with your verified email address.
     email: "contact@gravora.in",
     displayEmail: "contact@gravora.in",
     hours: "Mon – Sat: 10:00 AM – 7:00 PM IST",
@@ -60,24 +66,20 @@ export const SITE_CONFIG: SiteConfig = {
   },
 
   seo: {
-    title: "Gravora — Crafted Into Forever | Custom Wood & Stone Engraving",
+    title: "Gravora — Crafted to Leave a Mark | Handcrafted Gifting & 3D Layered Art",
     description:
-      "Personalised wooden portraits, stone carving, custom plaques, bespoke gifts, and business merchandise. Connect directly with our artisans via WhatsApp.",
+      "Handcrafted wooden creations, 3D layered Little Worlds art, personalized keepsakes, and thoughtfully designed gifts. Connect directly with founders Rahul & Mohit on WhatsApp.",
     siteUrl: "https://gravora.in",
-    ogImage: "/hero-bg.png",
   },
 };
 
 /**
- * Helper to build an official WhatsApp click-to-chat URL.
- * Encodes messages safely and validates phone configuration.
+ * Builds official WhatsApp click-to-chat URL with properly encoded message.
  */
 export function buildWhatsAppUrl(message: string): { url: string; isConfigured: boolean } {
   const phone = SITE_CONFIG.whatsapp.phoneNumber.replace(/[^0-9]/g, "");
   const isConfigured = phone.length >= 10 && phone !== "919876543210" && phone !== "919999999999";
-  
   const encodedText = encodeURIComponent(message.trim());
   const url = `https://wa.me/${phone}?text=${encodedText}`;
-
   return { url, isConfigured };
 }

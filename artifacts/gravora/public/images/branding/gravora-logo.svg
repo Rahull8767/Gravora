@@ -1,0 +1,25 @@
+<svg viewBox="0 0 320 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stylized G Monogram -->
+  <g transform="translate(6, 6)">
+    <!-- Outer G Contour with bronze-gold gradient -->
+    <path d="M42 16.5C38 8 29.5 3 20.5 3C9 3 0 12.5 0 25C0 37.5 9.5 47 21.5 47C31.5 47 38.5 41 40.5 31H21V24.5H48C48.3 35.5 42 53.5 21.5 53.5C6.5 53.5 -5 41 -5 25C-5 9 6.5 -3.5 21 -3.5C31.5 -3.5 39.5 3 44 11.5L42 16.5Z" fill="#9A6428" transform="translate(6, 4) scale(0.72)"/>
+    <!-- Flowing inner curves -->
+    <path d="M12 36C18 31 25 30 31 34C26 29 20 28 13 31Z" fill="#704522" opacity="0.85"/>
+    <path d="M15 39C20 35 26 34.5 30 37.5C26 33.5 21 33 16 35.5Z" fill="#9A6428" opacity="0.7"/>
+    <!-- 4-point Sparkle Star -->
+    <path d="M35 10C35 13 36.5 14.5 39.5 14.5C36.5 14.5 35 16 35 19C35 16 33.5 14.5 30.5 14.5C33.5 14.5 35 13 35 10Z" fill="#9A6428"/>
+  </g>
+
+  <!-- Elegant Vertical Separator -->
+  <line x1="68" y1="12" x2="68" y2="60" stroke="#E6DED2" stroke-width="1.2"/>
+
+  <!-- Wordmark & Tagline -->
+  <g transform="translate(82, 0)">
+    <text x="0" y="36" font-family="'Playfair Display', Georgia, serif" font-size="26" font-weight="700" fill="#29231E" letter-spacing="0.18em">GRAVORA</text>
+    <text x="1" y="52" font-family="'DM Sans', sans-serif" font-size="7.5" font-weight="600" fill="#704522" letter-spacing="0.22em">CRAFTED TO LEAVE A MARK.</text>
+    <!-- Accent Line with Sparkle -->
+    <line x1="1" y1="60" x2="65" y2="60" stroke="#9A6428" stroke-width="0.8" stroke-opacity="0.5"/>
+    <path d="M72 58C72 59.2 72.8 60 74 60C72.8 60 72 60.8 72 62C72 60.8 71.2 60 70 60C71.2 60 72 59.2 72 58Z" fill="#9A6428"/>
+    <line x1="79" y1="60" x2="143" y2="60" stroke="#9A6428" stroke-width="0.8" stroke-opacity="0.5"/>
+  </g>
+</svg>
